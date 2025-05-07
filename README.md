@@ -10,7 +10,8 @@ Develop a basic Retrieval-Augmented Generation (RAG) system that retrieves infor
 ## Core Requirements
 
 ### 1. Document Indexing
-- Use **Chromadb** with **persistence enabled**.  
+- Use **Chromadb** with **persistence enabled**.
+- Choose a document of an event that happend after **August 2024**
 - Include document **splitting** (≥ 50 chunks) using appropriate text splitting strategies.
 
 ### 2. System Components
@@ -18,6 +19,7 @@ Develop a basic Retrieval-Augmented Generation (RAG) system that retrieves infor
 - Implement with **LangChain** or **LlamaIndex**.  
 - Use **LangSmith** or **LangFuse**.  
 - Use **Git and GitHub** for version control.
+- Don not use pre-built agents.
 
 ### 3. Experimentation  
 - Compare **system prompts** and their effects on model behavior.  

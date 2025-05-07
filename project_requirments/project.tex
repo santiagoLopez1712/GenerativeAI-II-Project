@@ -1,10 +1,20 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[12pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{parskip}
+\usepackage{microtype}
+\usepackage{lmodern}
 \usepackage{needspace}
+
+\definecolor{linkblue}{RGB}{40, 90, 150}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=linkblue,
+    urlcolor=linkblue
+}
 
 \title{\textbf{RAG System Homework Project}}
 \author{}
@@ -14,49 +24,71 @@
 
 \maketitle
 
-\needspace{5\baselineskip}
 \section*{Overview}
 
-Your task is to build a Retrieval-Augmented Generation (RAG) system that answers questions using external documents. This project is designed to demonstrate how large language models (LLMs) can be grounded in current, domain-specific knowledge.
+Your task is to build a \textbf{Retrieval-Augmented Generation (RAG)} system that answers questions using external documents. This demonstrates how large language models (LLMs) can be grounded in up-to-date, domain-specific knowledge.
 
-The model you'll use has a knowledge cutoff in \textbf{August 2024}. Therefore, your system must correctly answer questions about \textbf{events occurring after that date} by retrieving relevant documents — not by relying on the model's internal knowledge.
+The chosen model has a knowledge cutoff in \textbf{August 2024}. Therefore, your system must rely on retrieved documents to answer questions about events \textbf{after this date} — not on the model’s internal knowledge.
 
 \section*{Project Requirements}
 
-You must select a document that describes an event that happened after August 2024. Store and index this document using \textbf{ChromaDB} with persistence enabled. Apply a text-splitting strategy to break the content into at least 50 meaningful chunks for effective retrieval.
+\subsection*{Document Preparation}
+You must choose a document that describes an event that occurred after August 2024. Store and index the document using \textbf{ChromaDB} with persistence enabled. Apply a text-splitting strategy to divide the content into at least \textbf{50 chunks} to enable meaningful retrieval.
 
-The system must be implemented using the \texttt{gemini-2.0-flash} model. You are required to use either \textbf{LangChain} or \textbf{LlamaIndex} to orchestrate the retrieval and generation process. Additionally, integrate either \textbf{LangSmith} or \textbf{LangFuse} for observability and debugging. Pre-built agents are not allowed; build your pipeline manually.
+\subsection*{System Implementation}
+The system must use the \texttt{gemini-2.0-flash} model. You are required to build the RAG pipeline using either \textbf{LangChain} or \textbf{LlamaIndex}, and integrate with either \textbf{LangSmith} or \textbf{LangFuse} for tracing and observability.
 
-Your implementation should support \textbf{dialog flow} (multi-turn interactions) and \textbf{memory} (context tracking). The system should be capable of holding a conversation over several turns while keeping track of the context provided in earlier exchanges.
+\textbf{Pre-built agents are not allowed.} You must implement core components manually.
 
-As part of your evaluation, design at least five questions that can only be answered correctly using the retrieved content. These questions must be unanswerable by the language model alone. You should demonstrate and explain this by testing the model both with and without retrieval. Also, experiment with different system prompts and report on how they influence the model’s behavior.
+The system should support:
+\begin{itemize}[noitemsep]
+  \item \textbf{Dialog flow} – handle multi-turn interactions.
+  \item \textbf{Memory} – retain context across turns.
+\end{itemize}
 
-Your repository must follow best practices. Keep your Git history clean — do not commit large files or secret tokens. The code should be well-documented and easy to run.
+\subsection*{Effectiveness Testing}
+Design a set of at least \textbf{five questions} that can only be answered with the help of the retrieved document. The model should \textbf{fail or hallucinate} when answering these questions without retrieval, proving the necessity of RAG.
 
-\needspace{5\baselineskip}
+You should also experiment with \textbf{different system prompts} and describe their impact on behavior and results.
+
+\subsection*{Code Quality}
+Your repository must follow best practices:
+\begin{itemize}[noitemsep]
+  \item No large files in Git history.
+  \item No secret tokens in commit history.
+  \item Code must be documented and reproducible.
+\end{itemize}
+
 \section*{Submission Guidelines}
 
-The deadline for this project is \textbf{11.05 at 23:59}. Each student has a dedicated branch in the repository. You must open a \textbf{Pull Request (PR)} from your working branch to your assigned branch before the deadline.
+\textcolor{linkblue}{\textbf{Deadline:} 11.05 at 23:59}
 
-Your PR should include:
+Each student has a dedicated branch in the repository. You must open a \textcolor{linkblue}{\textbf{Pull Request (PR)}} from your working branch to your assigned branch before the deadline.
+
+Your PR must include:
 \begin{itemize}[noitemsep]
-  \item A complete implementation of your RAG system.
-  \item A Jupyter notebook or script that demonstrates document indexing, retrieval, answering, and prompt experimentation.
+  \item Full implementation of the RAG system.
+  \item A Jupyter notebook or script demonstrating:
+    \begin{itemize}[noitemsep]
+      \item Indexing
+      \item Retrieval
+      \item Answering
+      \item Prompt experimentation
+    \end{itemize}
   \item A link to your project in \textbf{LangSmith} or \textbf{LangFuse}.
 \end{itemize}
 
-\needspace{5\baselineskip}
 \section*{Bonus Requirements (Extra Credit)}
 
-To earn extra credit, your system must implement both:
+To receive extra credit, your system must implement both of the following:
+
 \begin{enumerate}[label=\arabic*.]
-  \item \textbf{Metadata filtering} to refine the retrieval process.
-  \item \textbf{Multi-query retrieval}, such as rephrasing the question or running multiple variations to improve the context.
+  \item \textbf{Metadata filtering} – restrict retrieval to relevant document subsets.
+  \item \textbf{Multi-query retrieval} – use rephrased or alternative queries to improve retrieval depth.
 \end{enumerate}
 
-\needspace{5\baselineskip}
 \section*{Final Note}
 
-Make sure your system proves its effectiveness by answering questions that the model could not answer on its own. The strength of your RAG system lies in how well it uses the retrieved information.
+Your RAG system must prove its value by answering questions that the model \textbf{cannot answer on its own}. Focus on demonstrating that correct answers emerge only when retrieval is active and relevant.
 
 \end{document}

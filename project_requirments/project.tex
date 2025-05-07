@@ -1,0 +1,62 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{parskip}
+\usepackage{needspace}
+
+\title{\textbf{RAG System Homework Project}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\needspace{5\baselineskip}
+\section*{Overview}
+
+Your task is to build a Retrieval-Augmented Generation (RAG) system that answers questions using external documents. This project is designed to demonstrate how large language models (LLMs) can be grounded in current, domain-specific knowledge.
+
+The model you'll use has a knowledge cutoff in \textbf{August 2024}. Therefore, your system must correctly answer questions about \textbf{events occurring after that date} by retrieving relevant documents — not by relying on the model's internal knowledge.
+
+\section*{Project Requirements}
+
+You must select a document that describes an event that happened after August 2024. Store and index this document using \textbf{ChromaDB} with persistence enabled. Apply a text-splitting strategy to break the content into at least 50 meaningful chunks for effective retrieval.
+
+The system must be implemented using the \texttt{gemini-2.0-flash} model. You are required to use either \textbf{LangChain} or \textbf{LlamaIndex} to orchestrate the retrieval and generation process. Additionally, integrate either \textbf{LangSmith} or \textbf{LangFuse} for observability and debugging. Pre-built agents are not allowed; build your pipeline manually.
+
+Your implementation should support \textbf{dialog flow} (multi-turn interactions) and \textbf{memory} (context tracking). The system should be capable of holding a conversation over several turns while keeping track of the context provided in earlier exchanges.
+
+As part of your evaluation, design at least five questions that can only be answered correctly using the retrieved content. These questions must be unanswerable by the language model alone. You should demonstrate and explain this by testing the model both with and without retrieval. Also, experiment with different system prompts and report on how they influence the model’s behavior.
+
+Your repository must follow best practices. Keep your Git history clean — do not commit large files or secret tokens. The code should be well-documented and easy to run.
+
+\needspace{5\baselineskip}
+\section*{Submission Guidelines}
+
+The deadline for this project is \textbf{11.05 at 23:59}. Each student has a dedicated branch in the repository. You must open a \textbf{Pull Request (PR)} from your working branch to your assigned branch before the deadline.
+
+Your PR should include:
+\begin{itemize}[noitemsep]
+  \item A complete implementation of your RAG system.
+  \item A Jupyter notebook or script that demonstrates document indexing, retrieval, answering, and prompt experimentation.
+  \item A link to your project in \textbf{LangSmith} or \textbf{LangFuse}.
+\end{itemize}
+
+\needspace{5\baselineskip}
+\section*{Bonus Requirements (Extra Credit)}
+
+To earn extra credit, your system must implement both:
+\begin{enumerate}[label=\arabic*.]
+  \item \textbf{Metadata filtering} to refine the retrieval process.
+  \item \textbf{Multi-query retrieval}, such as rephrasing the question or running multiple variations to improve the context.
+\end{enumerate}
+
+\needspace{5\baselineskip}
+\section*{Final Note}
+
+Make sure your system proves its effectiveness by answering questions that the model could not answer on its own. The strength of your RAG system lies in how well it uses the retrieved information.
+
+\end{document}

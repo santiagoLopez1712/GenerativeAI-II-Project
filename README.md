@@ -1,56 +1,71 @@
-# Homework Project: Build a RAG (Retrieval-Augmented Generation) System
+# 🧠 Homework Project: Build a RAG (Retrieval-Augmented Generation) System
 
-## Objective
-Develop a basic Retrieval-Augmented Generation (RAG) system that retrieves information from an external document source and uses it to answer questions. This will demonstrate how language models can be grounded in up-to-date, domain-specific knowledge.
+## 📌 Objective
 
-> The chosen model has a knowledge cutoff in **August 2024**, so answers to recent topics must rely on **retrieved documents**, not internal model knowledge.
+The goal of this project is to build a **Retrieval-Augmented Generation (RAG)** system that fetches information from external documents and uses it to answer user questions. This project demonstrates how to ground a language model in real-world, up-to-date knowledge.
+
+> 💡 **Note:** The selected model has a knowledge cutoff in **August 2024**. Your system must use **retrieved documents** to correctly answer questions about **events occurring after this date**.
 
 ---
 
-## Core Requirements
+## 🛠️ Core Requirements
 
 ### 1. Document Indexing
-- Use **Chromadb** with **persistence enabled**.
-- Choose a document of an event that happend after **August 2024**
-- Include document **splitting** (≥ 50 chunks) using appropriate text splitting strategies.
+- Use **ChromaDB** with **persistence enabled**.
+- Select a document describing an event that happened **after August 2024**.
+- Split the document into **at least 50 chunks** using appropriate text splitting strategies.
 
-### 2. System Components
-- Use `gemini-2.0-flash`
-- Implement with **LangChain** or **LlamaIndex**.  
-- Use **LangSmith** or **LangFuse**.  
-- Use **Git and GitHub** for version control.
-- Don not use pre-built agents.
-- **Dialog flow** (multi-turn interaction)  
-- **Memory** (context tracking across interactions)  
+### 2. System Architecture
+- Use the model: `gemini-2.0-flash`
+- Implement the pipeline using:
+  - **LangChain** or **LlamaIndex**
+  - **LangSmith** or **LangFuse** for observability and tracing
+- Version control your code with **Git and GitHub**
+- **Do not use pre-built agents**
+- Implement:
+  - 🗣️ **Dialog flow** (multi-turn interaction)
+  - 🧠 **Memory** (to track context across messages)
 
-### 3. Experimentation  
-- Compare **system prompts** and their effects on model behavior.  
-- Use a variety of **questions** to evaluate system robustness (at leat 5 different questions with correct answers).
+### 3. Experimentation and Effectiveness Testing
+- Create **at least 5 meaningful questions** that the system should answer using the retrieved document.
+- The questions **must not be answerable** by the language model alone.
+- Validate that the system answers correctly **only when using retrieval**.
+- Compare and document the impact of different **system prompts** on model behavior.
 
-### 4. Reproducibility  
-- Submit your code via **GitHub**.  
-- Use a clean repository:  
-  - ❌ **No large files** in git history  
-  - ❌ **No secret tokens** in commit history
-
-### 5. Submission  
-- **Deadline:** `11.05 at 23:59`  
-- **Deliverables:**
-  - GitHub repo link
-  - Link to your **LangSmith** or **LangFuse** project.
-  - Jupyter notebook or script demonstrating:
-    - Index creation
-    - Retrieval
-    - Answer generation
-    - Prompt variations
+### 4. Reproducibility & Clean Code Practices
+- Use a clean GitHub repository:
+  - ❌ No **large files** in git history
+  - ❌ No **secret tokens** in commit history
+- Your code should be:
+  - Well-documented
+  - Easy to run
+  - Clearly structured
 
 ---
 
-## Bonus Features (Optional, for Extra Credit)
+## 🚀 Submission Instructions
 
-Implement one or more of the following to enhance your RAG system:
-
-- ✅ **Metadata filtering** during document retrieval  
-- ✅ **Multi-Query retrieval** (ask multiple questions or rephrase to get better context)
+- **Deadline:** `11.05 at 23:59`
+- Each student has a dedicated branch named after them.
+- Open a **Pull Request (PR)** from your working branch **to your assigned branch** in this repository.
+- Your PR must include:
+  - ✅ Your full implementation code
+  - ✅ A Jupyter notebook or script showing:
+    - Document indexing
+    - Retrieval steps
+    - Question answering
+    - Prompt variations and experiments
+  - ✅ Link to your **LangSmith** or **LangFuse** project
 
 ---
+
+## ⭐ Bonus (Mandatory for Extra Credit)
+
+To earn bonus points, your system must implement **both** of the following features:
+
+- 🔍 **Metadata filtering** to refine document retrieval
+- 🔁 **Multi-Query retrieval** (e.g., query rephrasing or multiple simultaneous questions to improve answer quality)
+
+---
+
+Happy building! 🚀

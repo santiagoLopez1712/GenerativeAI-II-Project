@@ -6,6 +6,7 @@
 \usepackage{parskip}
 \usepackage{microtype}
 \usepackage{lmodern}
+\usepackage[ngerman]{babel}
 \usepackage{needspace}
 
 \definecolor{linkblue}{RGB}{40, 90, 150}
@@ -16,7 +17,7 @@
     urlcolor=linkblue
 }
 
-\title{\textbf{RAG System Homework Project}}
+\title{\textbf{Hausaufgabe: Entwicklung eines RAG-Systems}}
 \author{}
 \date{}
 
@@ -24,71 +25,72 @@
 
 \maketitle
 
-\section*{Overview}
+\section*{Überblick}
 
-Your task is to build a \textbf{Retrieval-Augmented Generation (RAG)} system that answers questions using external documents. This demonstrates how large language models (LLMs) can be grounded in up-to-date, domain-specific knowledge.
+In dieser Aufgabe entwickeln Sie ein \textbf{Retrieval-Augmented Generation (RAG)}-System, das externe Dokumente verwendet, um Benutzerfragen zu beantworten. Ziel ist es zu zeigen, wie große Sprachmodelle (LLMs) mit aktuellem, domänenspezifischem Wissen verknüpft werden können.
 
-The chosen model has a knowledge cutoff in \textbf{August 2024}. Therefore, your system must rely on retrieved documents to answer questions about events \textbf{after this date} — not on the model’s internal knowledge.
+Das verwendete Modell hat einen Wissensstand mit \textbf{Stichtag August 2024}. Ihr System muss daher Informationen aus \textbf{externer Dokumentenrecherche} verwenden, um Fragen zu \textbf{Ereignissen nach diesem Datum} korrekt zu beantworten.
 
-\section*{Project Requirements}
+\section*{Projektanforderungen}
 
-\subsection*{Document Preparation}
-You must choose a document that describes an event that occurred after August 2024. Store and index the document using \textbf{ChromaDB} with persistence enabled. Apply a text-splitting strategy to divide the content into at least \textbf{50 chunks} to enable meaningful retrieval.
+\subsection*{Dokumentenauswahl und -verarbeitung}
+Wählen Sie ein Dokument über ein Ereignis nach August 2024. Speichern und indexieren Sie es mit \textbf{ChromaDB} und aktivierter Persistenz. Verwenden Sie eine geeignete Textaufteilung, um mindestens \textbf{50 sinnvolle Chunks} zu erzeugen.
 
-\subsection*{System Implementation}
-The system must use the \texttt{gemini-2.0-flash} model. You are required to build the RAG pipeline using either \textbf{LangChain} or \textbf{LlamaIndex}, and integrate with either \textbf{LangSmith} or \textbf{LangFuse} for tracing and observability.
+\subsection*{Systemarchitektur}
+Nutzen Sie das Modell \texttt{gemini-2.0-flash}. Die Pipeline ist mit \textbf{LangChain} oder \textbf{LlamaIndex} umzusetzen. Zur Nachvollziehbarkeit und Beobachtbarkeit verwenden Sie \textbf{LangSmith} oder \textbf{LangFuse}.
 
-\textbf{Pre-built agents are not allowed.} You must implement core components manually.
+Der Einsatz von \textbf{vorgefertigten Agenten ist nicht erlaubt}. Die zentralen Komponenten müssen selbst entwickelt werden.
 
-The system should support:
+Das System muss folgende Funktionen unterstützen:
 \begin{itemize}[noitemsep]
-  \item \textbf{Dialog flow} – handle multi-turn interactions.
-  \item \textbf{Memory} – retain context across turns.
+  \item \textbf{Dialogführung} – mehrstufige Benutzerdialoge.
+  \item \textbf{Speicherung von Kontext} – Beibehaltung des Gesprächskontexts über mehrere Eingaben hinweg.
 \end{itemize}
 
-\subsection*{Effectiveness Testing}
-Design a set of at least \textbf{five questions} that can only be answered with the help of the retrieved document. The model should \textbf{fail or hallucinate} when answering these questions without retrieval, proving the necessity of RAG.
+\subsection*{Wirksamkeitstest}
+Erstellen Sie mindestens \textbf{fünf Fragen}, die nur mit Hilfe des Dokuments korrekt beantwortet werden können. Das Modell soll diese Fragen \textbf{nicht ohne Dokumentretrieval} beantworten können.
 
-You should also experiment with \textbf{different system prompts} and describe their impact on behavior and results.
+Testen Sie Ihr System mit und ohne Retrieval und dokumentieren Sie die Unterschiede. Variieren Sie außerdem die \textbf{System-Prompts} und analysieren Sie deren Auswirkungen.
 
-\subsection*{Code Quality}
-Your repository must follow best practices:
+\subsection*{Codequalität}
+Ihr Repository muss gute Entwicklungsstandards einhalten:
 \begin{itemize}[noitemsep]
-  \item No large files in Git history.
-  \item No secret tokens in commit history.
-  \item Code must be documented and reproducible.
+  \item Keine großen Dateien im Git-Verlauf.
+  \item Keine geheimen Token in den Commits.
+  \item Gut strukturierter und dokumentierter Code.
 \end{itemize}
 
-\section*{Submission Guidelines}
+\section*{Abgabehinweise}
 
-\textcolor{linkblue}{\textbf{Deadline:} 11.05 at 23:59}
+\textcolor{linkblue}{\textbf{Abgabefrist:} 11.05 um 23:59 Uhr}
 
-Each student has a dedicated branch in the repository. You must open a \textcolor{linkblue}{\textbf{Pull Request (PR)}} from your working branch to your assigned branch before the deadline.
+Jede:r Studierende hat einen eigenen Branch im Repository. Öffnen Sie einen \textcolor{linkblue}{\textbf{Pull Request (PR)}} von Ihrem Arbeits-Branch auf den Ihnen zugewiesenen Branch.
 
-Your PR must include:
+Ihr PR muss Folgendes enthalten:
 \begin{itemize}[noitemsep]
-  \item Full implementation of the RAG system.
-  \item A Jupyter notebook or script demonstrating:
+  \item Die vollständige Implementierung Ihres RAG-Systems.
+  \item Ein Jupyter-Notebook oder Skript mit Demonstration der:
     \begin{itemize}[noitemsep]
-      \item Indexing
-      \item Retrieval
-      \item Answering
-      \item Prompt experimentation
+      \item Dokumentenindexierung
+      \item Dokumentenabfrage (Retrieval)
+      \item Fragebeantwortung
+      \item Prompt-Variationen
     \end{itemize}
-  \item A link to your project in \textbf{LangSmith} or \textbf{LangFuse}.
+  \item Einen Link zu Ihrem Projekt in \textbf{LangSmith} oder \textbf{LangFuse}.
 \end{itemize}
 
-\section*{Bonus Requirements (Extra Credit)}
+\section*{Bonus (Zusatzpunkte)}
 
-To receive extra credit, your system must implement both of the following:
+Für Zusatzpunkte muss Ihr System beide der folgenden Funktionen enthalten:
 
 \begin{enumerate}[label=\arabic*.]
-  \item \textbf{Metadata filtering} – restrict retrieval to relevant document subsets.
-  \item \textbf{Multi-query retrieval} – use rephrased or alternative queries to improve retrieval depth.
+  \item \textbf{Metadatenfilterung} – Eingrenzung der Dokumentensuche nach Attributen.
+  \item \textbf{Multi-Query-Retrieval} – Nutzung mehrerer oder umformulierter Anfragen zur Verbesserung der Antwortqualität.
 \end{enumerate}
 
-\section*{Final Note}
+\needspace{5\baselineskip}
+\section*{Abschließender Hinweis}
 
-Your RAG system must prove its value by answering questions that the model \textbf{cannot answer on its own}. Focus on demonstrating that correct answers emerge only when retrieval is active and relevant.
+Ihr System soll nachweisen, dass es nur mit der Hilfe von Dokumentretrieval zu korrekten Antworten kommt. Der Mehrwert Ihres RAG-Systems zeigt sich darin, dass das Sprachmodell allein nicht ausreicht.
 
 \end{document}

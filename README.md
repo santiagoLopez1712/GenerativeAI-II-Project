@@ -20,6 +20,8 @@ Develop a basic Retrieval-Augmented Generation (RAG) system that retrieves infor
 - Use **LangSmith** or **LangFuse**.  
 - Use **Git and GitHub** for version control.
 - Don not use pre-built agents.
+- **Dialog flow** (multi-turn interaction)  
+- **Memory** (context tracking across interactions)  
 
 ### 3. Experimentation  
 - Compare **system prompts** and their effects on model behavior.  
@@ -48,9 +50,6 @@ Develop a basic Retrieval-Augmented Generation (RAG) system that retrieves infor
 
 Implement one or more of the following to enhance your RAG system:
 
-- ✅ **Dialog flow** (multi-turn interaction)  
-- ✅ **Memory** (context tracking across interactions)  
-- ✅ **Query rewriting** (to improve retrieval relevance)  
 - ✅ **Metadata filtering** during document retrieval  
 - ✅ **Multi-Query retrieval** (ask multiple questions or rephrase to get better context)
 

@@ -6,7 +6,7 @@ from retriever import create_vectorstore, load_vectorstore
 from chat_chain import create_chat_chain
 
 load_dotenv()
-google_api_key = os.getenv("GOOGLE_API_KEY")
+google_api_mainkey = os.getenv("GOOGLE_API_KEY")
 langchain_api_key = os.getenv("LANGCHAIN_API_KEY") # Aunque no se usa directamente aquí
 
 # Configurar LangSmith (opcional)

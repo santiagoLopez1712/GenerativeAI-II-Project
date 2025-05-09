@@ -1,14 +1,14 @@
 from langchain_core.prompts import PromptTemplate
-from langchain_core.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-from langchain_google_genai import Gemini
+from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 
 def create_chat_chain(retriever):
     """Crea la cadena conversacional RAG."""
     os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
-    llm = Gemini(model_name="gemini-2.0-flash")
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
+    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key='answer')
     prompt_template = """Utiliza la siguiente información para responder la pregunta del usuario.
     Si la respuesta no se encuentra en la información proporcionada, responde "No tengo la información para responder a esa pregunta."
     No hagas suposiciones.

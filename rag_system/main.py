@@ -5,14 +5,17 @@ from document_loader import load_and_split_documents
 from retriever import create_vectorstore, load_vectorstore
 from chat_chain import create_chat_chain
 
-# Cargar variables de entorno desde .env
 load_dotenv()
+google_api_key = os.getenv("GOOGLE_API_KEY")
+langchain_api_key = os.getenv("LANGCHAIN_API_KEY") # Aunque no se usa directamente aquí
 
 # Configurar LangSmith (opcional)
 if os.getenv("LANGCHAIN_TRACING_V2"):
     os.environ["LANGCHAIN_TRACING_V2"] = "true"
     os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY_LANGSMITH")
     os.environ["LANGCHAIN_PROJECT"] = "rag-gemini-project"
+
+# ... el resto del código de main.py ...
 
 def main():
     data_dir = "./data"

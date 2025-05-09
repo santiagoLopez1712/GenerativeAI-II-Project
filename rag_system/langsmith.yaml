@@ -1,4 +1,4 @@
 # langsmith.yaml
 api_url: https://api.smith.langchain.com
-api_key: ${LANGCHAIN_API_KEY}
+api_key: ${LANGCHAIN_API_KEY_LANGSMITH}
 project_name: rag-gemini-project

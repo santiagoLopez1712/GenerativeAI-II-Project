@@ -1,10 +1,15 @@
 from langchain_community.vectorstores import Chroma
-from langchain.embeddings import GoogleGenerativeAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno al inicio del script
+load_dotenv()
+google_api_key = os.getenv("GOOGLE_API_KEY")
 
 def create_vectorstore(documents, persist_dir="./chroma_index"):
     """Crea y persiste la base de datos vectorial Chroma."""
-    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+    os.environ["GOOGLE_API_KEY"] = google_api_key # Usa la variable cargada
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     db = Chroma.from_documents(documents=documents, embedding=embeddings, persist_directory=persist_dir)
     db.persist()
@@ -13,7 +18,7 @@ def create_vectorstore(documents, persist_dir="./chroma_index"):
 
 def load_vectorstore(persist_dir="./chroma_index"):
     """Carga la base de datos vectorial Chroma existente."""
-    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+    os.environ["GOOGLE_API_KEY"] = google_api_key # Usa la variable cargada
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     db = Chroma(persist_directory=persist_dir, embedding_function=embeddings)
     print(f"✅ Base de datos vectorial cargada desde {persist_dir}")

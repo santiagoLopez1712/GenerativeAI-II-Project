@@ -1,69 +1,61 @@
-from langchain_core.prompts import PromptTemplate
+import os
+from dotenv import load_dotenv
 from langchain.memory import ConversationBufferMemory
 from langchain_google_genai import ChatGoogleGenerativeAI
-import os
-from langchain_core.runnables import RunnablePassthrough
+from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import chain
+from langchain_core.runnables import RunnablePassthrough, RunnableMap, chain
+
+# Cargar las variables de entorno desde el archivo .env
+load_dotenv()
+
+# Cargar las claves API desde el archivo .env
+os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
+os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+
 
 def create_chat_chain(retriever):
-    """Crea una cadena de recuperación conversacional personalizada."""
-    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
-    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key='answer')
+    from langchain_core.runnables import RunnableLambda
 
-    # Prompt para la respuesta basada en el contexto
+    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
+    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key="answer")
+
     prompt_template = """Historial del chat: {chat_history}
-    Utiliza la siguiente información para responder la pregunta del usuario.
-    Si la respuesta no se encuentra en la información proporcionada, responde "No tengo la información para responder a esa pregunta."
-    No hagas suposiciones.
+    Usa el siguiente contexto para responder la pregunta. Si no está en el contexto, di: "No tengo la información."
 
     Contexto: {context}
     Pregunta: {question}
 
     Respuesta:"""
-    RESPONSE_PROMPT = PromptTemplate(template=prompt_template, input_variables=["chat_history", "context", "question"])
 
-    # Cadena para recuperar documentos
-    retrieval_chain = retriever | RunnablePassthrough.assign(context=(lambda x: "\n\n".join(doc.page_content for doc in x)))
+    RESPONSE_PROMPT = PromptTemplate(
+        template=prompt_template,
+        input_variables=["chat_history", "context", "question"]
+    )
 
-    # Cadena para generar la respuesta
-    answer_chain = {
-        "context": lambda x: x["context"],
-        "question": lambda x: x["question"]
-    } | RESPONSE_PROMPT | StrOutputParser()
+    def format_docs(docs):
+        return "\n\n".join(doc.page_content for doc in docs)
 
-    # Cadena conversacional completa
+    # ✅ Esta función se usará para recuperar y formatear los documentos
+    def retrieve_and_format(inputs):
+        retrieved_docs = retriever.get_relevant_documents(inputs["query"])
+        return {
+            "chat_history": str(inputs.get("chat_history", "")),
+            "question": str(inputs["query"]),
+            "context": format_docs(retrieved_docs)
+        }
+
+    full_chain = (
+        RunnableLambda(retrieve_and_format) 
+        | RESPONSE_PROMPT 
+        | llm 
+        | StrOutputParser()
+    )
+
     @chain
-    def conversational_rag_chain(query: str):
-        # Cargar el historial de la memoria
-        memory_variables = memory.load_memory_variables({})
-        chat_history = memory_variables['chat_history']
+    def conversational_chain(inputs: dict):
+        response = full_chain.invoke(inputs)
+        memory.save_context({"question": inputs["query"]}, {"answer": response})
+        return {"answer": response}
 
-        # Recuperar documentos
-        retrieved_documents = retrieval_chain.invoke({"question": query})
-
-        # Generar la respuesta usando el historial, el contexto y la pregunta
-        response = answer_chain.invoke({"chat_history": chat_history, "question": query, "context": retrieved_documents["context"]})
-
-        # Guardar la interacción en la memoria
-        memory.save_context(inputs={"question": query}, outputs={"answer": response})
-
-        return {"answer": response, "source_documents": retrieved_documents}
-
-    return conversational_rag_chain
-
-if __name__ == "__main__":
-    # Ejemplo de uso (necesitas haber creado la base de datos vectorial primero)
-    from retriever import load_vectorstore
-    persist_directory = "./chroma_index" # Asegúrate de que esta ruta sea correcta
-    retriever = load_vectorstore(persist_directory)
-    if retriever:
-        chat_chain = create_chat_chain(retriever)
-        result = chat_chain.invoke({"question": "¿Cuál es la idea principal del documento?"})
-        print(f"Respuesta: {result['answer']}")
-        print(f"Documentos fuente: {[os.path.basename(doc.metadata['source']) for doc in result['source_documents']]}")
-
-        # Ejemplo con memoria (esto necesitaría más trabajo para integrarse completamente)
-        # result_seguimiento = chat_chain.invoke({"question": "¿Puedes dar más detalles sobre eso?", "chat_history": [HumanMessage(content="¿Cuál es la idea principal del documento?"), AIMessage(content=result['answer'])]})
-        # print(f"\nRespuesta (seguimiento): {result_seguimiento['answer']}")
+    return conversational_chain

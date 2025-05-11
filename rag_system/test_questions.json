@@ -1,7 +1,21 @@
 [
-    "¿Cuáles son las principales conclusiones del documento?",
-    "Menciona alguna tecnología o tendencia específica que se discuta.",
-    "¿Qué problema o necesidad se aborda en el texto?",
-    "¿Hay alguna recomendación o sugerencia?",
-    "Resume brevemente el contenido del documento."
-]
+    {
+      "question": "¿cuál fue la principal preocupación expresada por Angela Merkel en el Foro Económico Mundial de 2015 con respecto a la Industria 4.0 y por qué consideraba urgente la fusión entre internet y la producción?"
+    },
+    {
+      "question": "¿Qué diferencia este enfoque alemán del de las economías liberales anglosajonas y las potencias autoritarias asiáticas, según el texto?"
+    },
+    {
+      "question": "¿Cuáles son estos cuatro enfoques y cómo contribuye la digitalización a cada uno de ellos?"
+    },
+    {
+      "question": "¿Cuáles son las principales preocupaciones y diferentes perspectivas que se presentan en el texto con respecto a la evolución del empleo y la calificación de los trabajadores en el contexto de la digitalización?"
+    },
+    {
+      "question": "¿Cuáles son los principales riesgos y oportunidades que se asocian con el uso de macrodatos en la industria alemana, y qué desafíos legales y de seguridad plantea este desarrollo?"
+    },
+    {
+      "question": "¿Quien es el autor del articulo?"
+    }
+  ]
+  

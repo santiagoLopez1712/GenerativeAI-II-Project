@@ -14,7 +14,7 @@ os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 
-def create_chat_chain(retriever, prompt_version="original"):
+def create_chat_chain(retriever, prompt_version="v3"):
     """Creates a custom conversational retrieval chain."""
     llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key='answer')
@@ -60,11 +60,28 @@ def create_chat_chain(retriever, prompt_version="original"):
         return "\n\n".join(doc.page_content for doc in docs)
 
     def retrieve_and_format(inputs):
-        retrieved_docs = retriever.invoke(inputs["question"])
+        # Verschiedene Abfragen generieren
+        # (z. B. Originalfrage, umformulierte Frage, detaillierter Kontext)
+        queries = [
+            inputs["question"],
+            f"Rephrase: {inputs['question']}",
+            f"Provide detailed context for: {inputs['question']}"
+        ]
+        
+        # Dokumente für jede Abfrage abrufen
+        all_retrieved_docs = []
+        for query in queries:
+            retrieved_docs = retriever.invoke(query)
+            all_retrieved_docs.extend(retrieved_docs)
+        
+        # Doppelte Dokumente entfernen (falls erforderlich)
+        unique_docs = {doc.page_content: doc for doc in all_retrieved_docs}.values()
+        
+        # Kontext aus den kombinierten Dokumenten erstellen
         return {
-            "chat_history": str(inputs.get("chat_history", "")),
-            "question": str(inputs["question"]),
-            "context": format_docs(retrieved_docs)
+            "chat_history": str(inputs.get("chat_history", "")),  # Chatverlauf
+            "question": str(inputs["question"]),  # Benutzerfrage
+            "context": format_docs(unique_docs)  # Kombinierte Dokumente als Kontext
         }
 
     full_chain = (

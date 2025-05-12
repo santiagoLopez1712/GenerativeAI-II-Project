@@ -28,15 +28,21 @@ def main():
             test_questions = json.load(f)
         print("\n--- 🚀 Testfragen ---")
 
+        chat_history = ""  # Initialisiert den Chatverlauf als leer
+
         for item in test_questions:
             if isinstance(item, dict) and "question" in item:
                 question = item["question"]
                 try:
-                    result = chat_chain.invoke({"question": question})  # Kann Zeit in Anspruch nehmen
+                    # Fügt den Chatverlauf hinzu
+                    result = chat_chain.invoke({"question": question, "chat_history": chat_history})
 
                     if "answer" in result:
-                        print(f"✅ Frage: {question}\n")  # Espacio entre pregunta y respuesta
-                        print(f"💬 Antwort: {result['answer']}\n\n")  # Dos espacios entre respuesta y siguiente Frage
+                        print(f"✅ Frage: {question}\n")
+                        print(f"💬 Antwort: {result['answer']}\n\n")
+                        
+                        # Aktualisiert den Chatverlauf
+                        chat_history += f"Frage: {question}\nAntwort: {result['answer']}\n\n"
                     else:
                         print(f"⚠️ Keine Antwort gefunden für: {question}\n\n")
                 except Exception as e:

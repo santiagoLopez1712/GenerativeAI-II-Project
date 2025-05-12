@@ -1,9 +1,9 @@
 import json
-from chat_chain import create_chat_chain 
-from retriever import load_vectorstore  
+from chat_chain import create_chat_chain
+from retriever import load_vectorstore
 
 def run_and_document(prompt_version, test_questions_file="test_questions.json", persist_dir="./chroma_index"):
-    """Runs test questions with a specific prompt version and documents the results."""
+    """Führt Testfragen mit einer bestimmten Prompt-Version aus und dokumentiert die Ergebnisse."""
     print(f"\n--- Ausführung mit der Prompt-Version: {prompt_version} ---")
 
     retriever = load_vectorstore(persist_dir=persist_dir)
@@ -17,21 +17,35 @@ def run_and_document(prompt_version, test_questions_file="test_questions.json", 
         with open(test_questions_file, "r") as f:
             test_questions = json.load(f)
         results = []
+        chat_history = ""  # Initialisiert den Chatverlauf als leer
+
         for item in test_questions:
             if isinstance(item, dict) and "question" in item:
                 question = item["question"]
-                result = chat_chain.invoke({"question": question, "chat_history": ""})
-                print(f"\nFrage: {question}")
-                print(f"Antwort: {result['answer']}")
-                # Maneja la ausencia de 'source_documents'
-                print(f"Quellendokumente: {[doc['metadata'].get('source', 'N/A') for doc in result.get('source_documents', [])]}")
-                results.append({
-                    "frage": question,
-                    "antwort": result['answer'],
-                    "quellen": [doc['metadata'].get('source', 'N/A') for doc in result.get('source_documents', [])]
-                })
+                try:
+                    # Fügt den Chatverlauf hinzu
+                    result = chat_chain.invoke({"question": question, "chat_history": chat_history})
+
+                    if "answer" in result:
+                        print(f"\nFrage: {question}")
+                        print(f"Antwort: {result['answer']}")
+                        # Behandelt das Fehlen von 'source_documents'
+                        print(f"Quellendokumente: {[doc['metadata'].get('source', 'N/A') for doc in result.get('source_documents', [])]}")
+
+                        # Aktualisiert den Chatverlauf
+                        chat_history += f"Frage: {question}\nAntwort: {result['answer']}\n\n"
+
+                        results.append({
+                            "frage": question,
+                            "antwort": result['answer'],
+                            "quellen": [doc['metadata'].get('source', 'N/A') for doc in result.get('source_documents', [])]
+                        })
+                    else:
+                        print(f"⚠️ Keine Antwort gefunden für: {question}\n\n")
+                except Exception as e:
+                    print(f"❌ Fehler beim Abrufen der Antwort: {e}\n\n")
             else:
-                print(f"Ungültiges Frageformat: {item}")
+                print(f"⚠️ Ungültiges Frageformat: {item}\n\n")
         return results
     except FileNotFoundError:
         print(f"Die Datei {test_questions_file} wurde nicht gefunden.")

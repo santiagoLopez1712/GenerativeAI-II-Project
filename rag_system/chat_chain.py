@@ -61,11 +61,11 @@ def create_chat_chain(retriever, prompt_version="v3"):
 
     def retrieve_and_format(inputs):
         # Verschiedene Abfragen generieren
-        # (z. B. Originalfrage, umformulierte Frage, detaillierter Kontext)
         queries = [
-            inputs["question"],
-            f"Rephrase: {inputs['question']}",
-            f"Provide detailed context for: {inputs['question']}"
+            inputs["question"],  # Originalfrage
+            f"Was bedeutet: {inputs['question']}?",  # Reformulierte Frage
+            f"Erklären Sie detailliert: {inputs['question']}",  # Kontextanfrage
+            f"Welche Beispiele gibt es für: {inputs['question']}?"  # Beispielanfrage
         ]
         
         # Dokumente für jede Abfrage abrufen
@@ -98,3 +98,57 @@ def create_chat_chain(retriever, prompt_version="v3"):
         return {"answer": response}
 
     return conversational_chain
+
+if __name__ == "__main__":
+    # Beispiel-Retriever (Mock für Testzwecke)
+    class MockRetriever:
+        def invoke(self, query):
+            # Simulierte Dokumente basierend auf der Abfrage
+            return [
+                {"page_content": f"Simulated content for query: {query}", "metadata": {"source": "MockSource"}}
+            ]
+
+    # Mock-Retriever erstellen
+    retriever = MockRetriever()
+
+    # Beispiel-Eingabe
+    inputs = {
+        "question": "Was ist Industrie 4.0?",
+        "chat_history": "Vorherige Frage: Was ist Digitalisierung?"
+    }
+
+    # Funktion retrieve_and_format ausführen
+    def format_docs(docs):
+        return "\n\n".join(doc["page_content"] for doc in docs)
+
+    def retrieve_and_format(inputs):
+        # Verschiedene Abfragen generieren
+        queries = [
+            inputs["question"],  # Originalfrage
+            f"Was bedeutet: {inputs['question']}?",  # Reformulierte Frage
+            f"Erklären Sie detailliert: {inputs['question']}",  # Kontextanfrage
+            f"Welche Beispiele gibt es für: {inputs['question']}?"  # Beispielanfrage
+        ]
+        
+        # Dokumente für jede Abfrage abrufen
+        all_retrieved_docs = []
+        for query in queries:
+            retrieved_docs = retriever.invoke(query)
+            all_retrieved_docs.extend(retrieved_docs)
+        
+        # Doppelte Dokumente entfernen (falls erforderlich)
+        unique_docs = {doc["page_content"]: doc for doc in all_retrieved_docs}.values()
+        
+        # Kontext aus den kombinierten Dokumenten erstellen
+        return {
+            "chat_history": str(inputs.get("chat_history", "")),  # Chatverlauf
+            "question": str(inputs["question"]),  # Benutzerfrage
+            "context": format_docs(unique_docs)  # Kombinierte Dokumente als Kontext
+        }
+
+    # Ergebnis drucken
+    result = retrieve_and_format(inputs)
+    print("\n--- Multi-Query Retrieval Ergebnis ---")
+    print(f"Chatverlauf: {result['chat_history']}")
+    print(f"Frage: {result['question']}")
+    print(f"Kontext:\n{result['context']}")

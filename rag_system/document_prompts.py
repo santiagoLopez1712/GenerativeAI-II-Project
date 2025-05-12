@@ -1,6 +1,6 @@
 import json
-from rag_system.chat_chain import create_chat_chain  # Stellen Sie sicher, dass der Pfad korrekt ist
-from rag_system.retriever import load_vectorstore  # Stellen Sie sicher, dass der Pfad korrekt ist
+from chat_chain import create_chat_chain 
+from retriever import load_vectorstore  
 
 def run_and_document(prompt_version, test_questions_file="test_questions.json", persist_dir="./chroma_index"):
     """Runs test questions with a specific prompt version and documents the results."""
@@ -20,14 +20,15 @@ def run_and_document(prompt_version, test_questions_file="test_questions.json", 
         for item in test_questions:
             if isinstance(item, dict) and "question" in item:
                 question = item["question"]
-                result = chat_chain.invoke(question)
+                result = chat_chain.invoke({"question": question, "chat_history": ""})
                 print(f"\nFrage: {question}")
                 print(f"Antwort: {result['answer']}")
-                print(f"Quellendokumente: {[doc.metadata.get('source', 'N/A') for doc in result['source_documents']]}")
+                # Maneja la ausencia de 'source_documents'
+                print(f"Quellendokumente: {[doc['metadata'].get('source', 'N/A') for doc in result.get('source_documents', [])]}")
                 results.append({
                     "frage": question,
                     "antwort": result['answer'],
-                    "quellen": [doc.metadata.get('source', 'N/A') for doc in result['source_documents']]
+                    "quellen": [doc['metadata'].get('source', 'N/A') for doc in result.get('source_documents', [])]
                 })
             else:
                 print(f"Ungültiges Frageformat: {item}")

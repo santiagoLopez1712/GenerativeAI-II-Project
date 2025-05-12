@@ -14,7 +14,7 @@ os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 
-def create_chat_chain(retriever, prompt_version="v3"):
+def create_chat_chain(retriever, prompt_version="v2", use_retrieval=True):
     """Creates a custom conversational retrieval chain."""
     llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key='answer')
@@ -60,28 +60,34 @@ def create_chat_chain(retriever, prompt_version="v3"):
         return "\n\n".join(doc.page_content for doc in docs)
 
     def retrieve_and_format(inputs):
-        # Verschiedene Abfragen generieren
-        queries = [
-            inputs["question"],  # Originalfrage
-            f"Was bedeutet: {inputs['question']}?",  # Reformulierte Frage
-            f"Erklären Sie detailliert: {inputs['question']}",  # Kontextanfrage
-            f"Welche Beispiele gibt es für: {inputs['question']}?"  # Beispielanfrage
-        ]
-        
-        # Dokumente für jede Abfrage abrufen
-        all_retrieved_docs = []
-        for query in queries:
-            retrieved_docs = retriever.invoke(query)
-            all_retrieved_docs.extend(retrieved_docs)
-        
-        # Doppelte Dokumente entfernen (falls erforderlich)
-        unique_docs = {doc.page_content: doc for doc in all_retrieved_docs}.values()
-        
-        # Kontext aus den kombinierten Dokumenten erstellen
+        if use_retrieval:
+            # Verschiedene Abfragen generieren
+            queries = [
+                inputs["question"],  # Originalfrage
+                f"Was bedeutet: {inputs['question']}?",  # Reformulierte Frage
+                f"Erklären Sie detailliert: {inputs['question']}",  # Kontextanfrage
+                f"Welche Beispiele gibt es für: {inputs['question']}?"  # Beispielanfrage
+            ]
+            
+            # Dokumente für jede Abfrage abrufen
+            all_retrieved_docs = []
+            for query in queries:
+                retrieved_docs = retriever.invoke(query)
+                all_retrieved_docs.extend(retrieved_docs)
+            
+            # Doppelte Dokumente entfernen (falls erforderlich)
+            unique_docs = {doc.page_content: doc for doc in all_retrieved_docs}.values()
+            
+            # Kontext aus den kombinierten Dokumenten erstellen
+            context = format_docs(unique_docs)
+        else:
+            # Kein Kontext aus Dokumenten
+            context = "Keine Dokumente verfügbar."
+
         return {
             "chat_history": str(inputs.get("chat_history", "")),  # Chatverlauf
             "question": str(inputs["question"]),  # Benutzerfrage
-            "context": format_docs(unique_docs)  # Kombinierte Dokumente als Kontext
+            "context": context  # Kontext (entweder aus Dokumenten oder leer)
         }
 
     full_chain = (

@@ -9,6 +9,7 @@ from langchain_core.runnables import chain
 
 # Laden von Umgebungsvariablen
 load_dotenv()
+os.environ["LANGSMITH_TRACING"] = "true"
 os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 

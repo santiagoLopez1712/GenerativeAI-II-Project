@@ -4,6 +4,7 @@ from document_loader import load_and_split_documents
 from retriever import create_vectorstore, load_vectorstore
 from chat_chain import create_chat_chain
 
+
 def main():
     data_dir = "./data"
     persist_dir = "./chroma_index"

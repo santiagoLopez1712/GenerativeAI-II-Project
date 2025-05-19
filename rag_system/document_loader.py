@@ -1,7 +1,8 @@
 import os
 from langchain_community.document_loaders import TextLoader
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+import pdfplumber
 
 def load_and_split_documents(data_dir="./data", chunk_size=500, chunk_overlap=100):
     """Loads and splits text and PDF documents."""
@@ -36,6 +37,35 @@ def load_and_split_documents(data_dir="./data", chunk_size=500, chunk_overlap=10
     chunks = splitter.split_documents(docs)
     print(f"✅ {len(chunks)} chunks were loaded and split.")
     return chunks
+
+def extract_pdf_with_pdfplumber(pdf_path):
+    """Extrae texto y tablas de un archivo PDF."""
+    text_content = []
+    tables = []
+
+    with pdfplumber.open(pdf_path) as pdf:
+        for page_num, page in enumerate(pdf.pages):
+            # Extraer texto
+            text = page.extract_text()
+            if text:
+                text_content.append({"page": page_num + 1, "text": text})
+
+            # Extraer tablas
+            page_tables = page.extract_tables()
+            for table in page_tables:
+                tables.append({"page": page_num + 1, "table": table})
+
+    return text_content, tables
+
+# Ejemplo de uso
+pdf_path = "./data/example.pdf"
+text_content, tables = extract_pdf_with_pdfplumber(pdf_path)
+
+print("Texto extraído:")
+for item in text_content:
+    print(f"Página {item['page']}: {item['text'][:100]}...")  # Muestra los primeros 100 caracteres
+
+print(f"\nSe encontraron {len(tables)} tablas.")
 
 if __name__ == "__main__":
     chunks = load_and_split_documents()
